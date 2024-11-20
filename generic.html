@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>thedat-nguyen</title>
+	<meta charset="utf-8">
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px; /* Giới hạn chiều rộng của container */
+            padding: 30px;
+            margin: 0 auto;
+        }
+
+        .result-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .result-container {
+            flex: 1 1 48%; /* Đảm bảo mỗi container chiếm 48% */
+            min-width: 200px;
+        }
+
+        .result {
+            white-space: pre-wrap;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            height: 150px;
+            overflow-y: auto;
+            word-wrap: break-word;
+            max-height: 150px; /* Giới hạn chiều cao tối đa */
+            word-break: break-word;
+        }
+
+        .result-label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .copy-btn-container {
+            margin-top: 10px;
+        }
+
+        .copy-btn-container button {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #ffffff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background-color: #000000;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: -15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            .result-group {
+                flex-direction: column; /* Chuyển các phần tử thành cột */
+                align-items: center; /* Căn giữa các phần tử */
+            }
+
+            .result-container {
+                flex: 1 1 100%; /* Mỗi phần tử sẽ chiếm 100% chiều rộng */
+                margin-bottom: 20px;
+            }
+
+            .result {
+                font-size: 14px;
+                padding: 8px;
+                height: auto; /* Điều chỉnh chiều cao tự động */
+                max-height: none; /* Loại bỏ giới hạn chiều cao */
+            }
+
+            .copy-btn-container button {
+                font-size: 12px;
+            }
+        }
+
+        /* Responsive for very small screens */
+        @media (max-width: 480px) {
+            .result {
+                font-size: 12px;
+            }
+
+            .copy-btn-container button {
+                font-size: 10px;
+            }
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        body.dark-mode .result {
+            background-color: #333;
+            border-color: #444;
+        }
+
+        body.dark-mode .toggle-btn {
+            background-color: #333;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body class="subpage">
+
+	<!-- Header -->
+	<header id="header">
+		<div class="logo"><a href="index.html">Design <span>by thedat-nguyen</span></a></div>
+		<a href="#menu">Menu</a>
+	</header><!-- Nav -->
+	<nav id="menu">
+		<ul class="links">
+			<li><a href="index.html">Home</a></li>
+			<li><a href="generic.html">CONVERT-TEXT</a></li>
+			<li><a href="elements.html">convert-img</a></li>
+		</ul>
+	</nav><!-- One -->
+    <button class="toggle-btn" id="toggleBtn" style="margin-top:50px ;">🌙</button>
+
+    <div class="container">
+        <h1 class="text-center mb-4" id="blink">CONVERT TEXT</h1>
+        <div class="form-group">
+            <label for="inputText" id="inputLabel">INPUT (Type "," Line Break)</label>
+            <textarea class="form-control" id="inputText" rows="3"></textarea>
+        </div>
+
+        <label for="resultText" id="outputLabel">OUTPUT</label>
+        <div class="result-group">
+            <div class="result-container">
+                <div class="result" id="uppercaseResult"></div>
+                <label for="uppercaseResult" class="result-label">AAA</label>
+                <div class="copy-btn-container">
+                    <button class="btn btn-success mt-2" id="copyUppercaseBtn" style="display:none;" onclick="copyToClipboard('uppercaseResult')">COPY</button>
+                </div>
+            </div>
+            <div class="result-container">
+                <div class="result" id="lowercaseResult"></div>
+                <label for="lowercaseResult" class="result-label">aaa</label>
+                <div class="copy-btn-container">
+                    <button class="btn btn-success mt-2" id="copyLowercaseBtn" style="display:none;" onclick="copyToClipboard('lowercaseResult')">COPY</button>
+                </div>
+            </div>
+            <div class="result-container">
+                <div class="result" id="capitalizeResult"></div>
+                <label for="capitalizeResult" class="result-label">Aaa</label>
+                <div class="copy-btn-container">
+                    <button class="btn btn-success mt-2" id="copyCapitalizeBtn" style="display:none;" onclick="copyToClipboard('capitalizeResult')">COPY</button>
+                </div>
+            </div>
+            <div class="result-container">
+                <div class="result" id="titlecaseResult"></div>
+                <label for="titlecaseResult" class="result-label">Aaa Aaa</label>
+                <div class="copy-btn-container">
+                    <button class="btn btn-success mt-2" id="copyTitlecaseBtn" style="display:none;" onclick="copyToClipboard('titlecaseResult')">COPY</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Design & Developer by © thedat-nguyen</p>
+    </footer>
+
+    <script>
+        // Hàm chuyển đổi văn bản
+        function convertText() {
+            const inputText = document.getElementById('inputText').value;
+            let uppercaseResult = '';
+            let lowercaseResult = '';
+            let capitalizeResult = '';
+            let titlecaseResult = '';
+
+            if (inputText.trim() === '') {
+                document.getElementById('uppercaseResult').textContent = '';
+                document.getElementById('lowercaseResult').textContent = '';
+                document.getElementById('capitalizeResult').textContent = '';
+                document.getElementById('titlecaseResult').textContent = '';
+                document.getElementById('copyUppercaseBtn').style.display = 'none';
+                document.getElementById('copyLowercaseBtn').style.display = 'none';
+                document.getElementById('copyCapitalizeBtn').style.display = 'none';
+                document.getElementById('copyTitlecaseBtn').style.display = 'none';
+                return;
+            }
+
+            // Xử lý inputText: loại bỏ khoảng trắng trước và sau dấu phẩy và tách các mục
+            const items = inputText.split(',').map(item => item.trim()); // Loại bỏ khoảng trắng xung quanh mỗi mục
+
+            // Uppercase
+            uppercaseResult = items.map(item => item.toUpperCase()).join('\n');
+            // Lowercase
+            lowercaseResult = items.map(item => item.toLowerCase()).join('\n');
+            // Capitalize
+            capitalizeResult = items.map(item => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()).join('\n');
+            // Titlecase
+            titlecaseResult = items.map(item => item.replace(/\b\w/g, char => char.toUpperCase())).join('\n');
+
+            // Gán kết quả vào các ô
+            document.getElementById('uppercaseResult').textContent = uppercaseResult;
+            document.getElementById('lowercaseResult').textContent = lowercaseResult;
+            document.getElementById('capitalizeResult').textContent = capitalizeResult;
+            document.getElementById('titlecaseResult').textContent = titlecaseResult;
+
+            // Hiển thị nút Copy
+            document.getElementById('copyUppercaseBtn').style.display = 'inline-block';
+            document.getElementById('copyLowercaseBtn').style.display = 'inline-block';
+            document.getElementById('copyCapitalizeBtn').style.display = 'inline-block';
+            document.getElementById('copyTitlecaseBtn').style.display = 'inline-block';
+        }
+
+        // Hàm copy nội dung
+        function copyToClipboard(resultId) {
+            const resultText = document.getElementById(resultId).textContent;
+            navigator.clipboard.writeText(resultText).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Copied to clipboard!',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            }).catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to copy',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            });
+        }
+
+        // Đổi chế độ sáng tối
+        document.getElementById('toggleBtn').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('toggleBtn').textContent = isDark ? '🌞' : '🌙';
+        });
+
+        // Lắng nghe sự kiện thay đổi input
+        document.getElementById('inputText').addEventListener('input', convertText);
+    </script>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/skel.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+</body>
+
+</html>

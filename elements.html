@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<!--
+	Hielo by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+
+<head>
+	<title>thedat-nguyen</title>
+	<meta charset="utf-8">
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body class="subpage">
+
+	<!-- Header -->
+	<header id="header">
+		<div class="logo"><a href="index.html">Design <span>by thedat-nguyen</span></a></div>
+		<a href="#menu">Menu</a>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				background-color: #f0f0f0;
+				margin: 0;
+			}
+	
+			.container {
+				background-color: white;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+				text-align: center;
+				max-width: 500px;
+				width: 100%;
+			}
+	
+			input[type="file"] {
+				margin: 10px 0;
+			}
+	
+			textarea {
+				width: 100%;
+				margin-top: 20px;
+				padding: 10px;
+				font-size: 16px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+			}
+	
+			button {
+				background-color: #4CAF50;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 16px;
+			}
+	
+			button:hover {
+				background-color: #45a049;
+			}
+	
+			#status {
+				font-size: 14px;
+				color: #888;
+				margin-top: 10px;
+			}
+			.footer {
+            position: fixed;
+            bottom: -15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+		</style>
+	</header><!-- Nav -->
+	<nav id="menu">
+		<ul class="links">
+			<li><a href="index.html">Home</a></li>
+			<li><a href="generic.html">CONVERT-TEXT</a></li>
+			<li><a href="elements.html">convert-img</a></li>
+		</ul>
+	</nav><!-- One -->
+	
+	<div class="container">
+        <h2>Trích xuất văn bản từ ảnh (Tiếng Việt & Tiếng Anh)</h2>
+        <input type="file" id="fileInput" accept="image/*">
+        <button id="startOCR" onclick="startOCR()">Nhận diện văn bản</button>
+        <textarea id="resultText" placeholder="Văn bản sẽ xuất hiện ở đây..." rows="10" cols="50"></textarea>
+        <p id="status">Chưa có hình ảnh nào được tải lên.</p>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.0.0/dist/tesseract.min.js"></script>
+    <script>
+        function startOCR() {
+            const fileInput = document.getElementById('fileInput');
+            const resultText = document.getElementById('resultText');
+            const status = document.getElementById('status');
+
+            if (fileInput.files.length === 0) {
+                alert('Vui lòng chọn một hình ảnh để tiếp tục.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const image = event.target.result;
+
+                // Hiển thị trạng thái
+                status.textContent = 'Đang xử lý hình ảnh...';
+
+                // Sử dụng Tesseract.js để trích xuất văn bản từ hình ảnh, hỗ trợ tiếng Việt và tiếng Anh
+                Tesseract.recognize(
+                    image, 
+                    'eng+vie', // Kết hợp tiếng Anh và tiếng Việt
+                    {
+                        logger: (m) => console.log(m)  // Log quá trình xử lý (tuỳ chọn)
+                    }
+                ).then(({ data: { text } }) => {
+                    resultText.value = text;
+                    status.textContent = 'Trích xuất thành công!';
+                }).catch((error) => {
+                    console.error(error);
+                    status.textContent = 'Có lỗi xảy ra. Vui lòng thử lại.';
+                });
+            };
+
+            // Đọc hình ảnh dưới dạng dữ liệu URL
+            reader.readAsDataURL(file);
+        }
+    </script>
+
+	<!-- Footer -->
+	<footer class="footer">
+        <p>Design & Developer by © thedat-nguyen</p>
+    </footer>
+	
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/skel.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+</body>
+
+</html>
