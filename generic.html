@@ -150,6 +150,79 @@
             background-color: #333;
             color: #ffffff;
         }
+
+ #showBoxButton {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#draggableBox {
+    position: absolute;
+    width: 300px;
+    padding: 10px;
+    background-color: lightblue;
+    border: 2px solid #ccc;
+    display: none;  /* Ban đầu ẩn ô vuông */
+    cursor: move;
+    box-sizing: border-box;
+}
+
+#draggableBox .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#inputNumbers {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#convertButton {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#outputBox {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    text-align: center;
+    border-radius: 5px;
+}
+
+#copyButton {
+    padding: 10px 20px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#copyButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+		
+		
     </style>
 </head>
 
@@ -175,6 +248,19 @@
             <label for="inputText" id="inputLabel">INPUT (Type "," Line Break)</label>
             <textarea class="form-control" id="inputText" rows="3"></textarea>
         </div>
+
+<button id="showBoxButton">SỐ LA MÃ</button>
+
+        <!-- Ô vuông có thể di chuyển -->
+        <div id="draggableBox" class="draggable">
+            <div class="content">
+                <input id="inputNumbers" type="text" placeholder="INPUT">
+                <button id="convertButton">Convert</button>
+                <div id="outputBox" class="output" contenteditable="false"> OUTPUT </div>
+                <button id="copyButton">Copy</button>
+            </div>
+        </div>
+	    
 
         <label for="resultText" id="outputLabel">OUTPUT</label>
         <div class="result-group">
@@ -287,6 +373,107 @@
             const isDark = document.body.classList.contains('dark-mode');
             document.getElementById('toggleBtn').textContent = isDark ? '🌞' : '🌙';
         });
+
+
+	const showBoxButton = document.getElementById('showBoxButton');
+const draggableBox = document.getElementById('draggableBox');
+const inputNumbers = document.getElementById('inputNumbers');
+const convertButton = document.getElementById('convertButton');
+const outputBox = document.getElementById('outputBox');
+const copyButton = document.getElementById('copyButton');
+
+let isDragging = false;
+let offsetX, offsetY;
+
+// Hàm chuyển đổi số thành chữ La Mã
+function convertToRoman(num) {
+    const romanNumerals = [
+        ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
+        ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"],
+        ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"],
+        ["", "M"]
+    ];
+
+    const digits = String(num).split('').reverse();
+    let roman = '';
+    
+    for (let i = 0; i < digits.length; i++) {
+        roman = romanNumerals[i][parseInt(digits[i])] + roman;
+    }
+
+    return roman;
+}
+
+// Xử lý sự kiện click trên nút để hiển thị hoặc ẩn ô vuông
+showBoxButton.addEventListener('click', () => {
+    if (draggableBox.style.display === 'none' || draggableBox.style.display === '') {
+        draggableBox.style.display = 'block';  // Hiện ô vuông
+    } else {
+        draggableBox.style.display = 'none';  // Ẩn ô vuông
+    }
+});
+
+// Xử lý sự kiện click trên nút chuyển đổi
+convertButton.addEventListener('click', () => {
+    const inputText = inputNumbers.value.trim();
+
+    // Xử lý chuỗi nhập vào, tách theo dấu / và , và chuyển thành mảng
+    const numbers = inputText.split(/[\/,]/).map(str => str.trim()).filter(Boolean);
+
+    // Chuyển đổi các số thành chữ La Mã
+    const romanNumerals = numbers.map(num => {
+        const parsedNum = parseInt(num, 10);
+        if (!isNaN(parsedNum) && parsedNum > 0) {
+            return convertToRoman(parsedNum);
+        }
+        return '';  // Nếu không phải số hợp lệ thì để trống
+    }).join('.');  // Dùng dấu "..." để thay thế dấu phân cách
+
+    // Cập nhật ô output
+    outputBox.textContent = romanNumerals;
+    copyButton.disabled = false;  // Kích hoạt nút copy
+});
+
+// Xử lý sự kiện copy nội dung
+copyButton.addEventListener('click', () => {
+    const range = document.createRange();
+    range.selectNode(outputBox);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+});
+
+// Xử lý sự kiện bắt đầu kéo ô vuông
+draggableBox.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - draggableBox.offsetLeft;
+    offsetY = e.clientY - draggableBox.offsetTop;
+});
+
+// Xử lý sự kiện kéo ô vuông
+document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+        let x = e.clientX - offsetX;
+        let y = e.clientY - offsetY;
+
+        // Giới hạn ô vuông chỉ di chuyển trong khung cửa sổ
+        let maxX = window.innerWidth - draggableBox.offsetWidth;
+        let maxY = window.innerHeight - draggableBox.offsetHeight;
+
+        x = Math.max(0, Math.min(x, maxX));
+        y = Math.max(0, Math.min(y, maxY));
+
+        draggableBox.style.left = x + 'px';
+        draggableBox.style.top = y + 'px';
+    }
+});
+
+// Dừng kéo khi thả chuột
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+	    
 
         // Lắng nghe sự kiện thay đổi input
         document.getElementById('inputText').addEventListener('input', convertText);
