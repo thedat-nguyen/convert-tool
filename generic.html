@@ -14,81 +14,115 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<style>
         body {
-            background-color: #f8f9fa;
-            font-family: 'Roboto', sans-serif;
-            transition: background-color 0.5s, color 0.5s;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
 
         .container {
-            width: 100%;
-            max-width: 900px; /* Giới hạn chiều rộng của container */
-            padding: 30px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        .result-group {
+        h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+
+        textarea,
+        .output {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        .output {
+            width: 300px;
+            height: 100px;
+            overflow-y: auto;
+            /* Cho phép cuộn theo chiều dọc */
+            background-color: #f9f9f9;
+            color: #333;
+            margin-bottom: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .copy-btn {
+            width: 323px;
+            height: 40px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 0 0 5px 5px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 40px;
+            display: block;
+        }
+
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .output-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
             justify-content: space-between;
             margin-top: 20px;
         }
 
-        .result-container {
-            flex: 1 1 48%; /* Đảm bảo mỗi container chiếm 48% */
-            min-width: 200px;
+        .column {
+            margin: 10px;
+            text-align: center;
         }
 
-        .result {
-            white-space: pre-wrap;
-            background-color: #e9ecef;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            padding: 10px;
-            height: 150px;
-            overflow-y: auto;
-            word-wrap: break-word;
-            max-height: 150px; /* Giới hạn chiều cao tối đa */
-            word-break: break-word;
-        }
-
-        .result-label {
+        .label {
             font-weight: bold;
-            margin-top: 10px;
+            margin-bottom: 5px;
             display: block;
         }
 
-        .copy-btn-container {
-            margin-top: 10px;
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .output-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .column {
+                width: 100%;
+            }
+
+            .output,
+            .copy-btn {
+                width: 100%;
+            }
         }
 
-        .copy-btn-container button {
-            display: inline-block;
-            width: 100%;
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #28a745;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
         }
 
-        .toggle-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background-color: #ffffff;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .notification.show {
+            opacity: 1;
         }
-
-        .toggle-btn:hover {
-            background-color: #000000;
-        }
-
         .footer {
             position: fixed;
             bottom: -15px;
@@ -99,130 +133,6 @@
             font-size: 14px;
             color: #666;
         }
-
-        /* Responsive layout */
-        @media (max-width: 768px) {
-            .result-group {
-                flex-direction: column; /* Chuyển các phần tử thành cột */
-                align-items: center; /* Căn giữa các phần tử */
-            }
-
-            .result-container {
-                flex: 1 1 100%; /* Mỗi phần tử sẽ chiếm 100% chiều rộng */
-                margin-bottom: 20px;
-            }
-
-            .result {
-                font-size: 14px;
-                padding: 8px;
-                height: auto; /* Điều chỉnh chiều cao tự động */
-                max-height: none; /* Loại bỏ giới hạn chiều cao */
-            }
-
-            .copy-btn-container button {
-                font-size: 12px;
-            }
-        }
-
-        /* Responsive for very small screens */
-        @media (max-width: 480px) {
-            .result {
-                font-size: 12px;
-            }
-
-            .copy-btn-container button {
-                font-size: 10px;
-            }
-        }
-
-        /* Dark mode styles */
-        body.dark-mode {
-            background-color: #121212;
-            color: #ffffff;
-        }
-
-        body.dark-mode .result {
-            background-color: #333;
-            border-color: #444;
-        }
-
-        body.dark-mode .toggle-btn {
-            background-color: #333;
-            color: #ffffff;
-        }
-
- #showBoxButton {
-    position: fixed;
-    top: 100px;
-    left: 20px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#draggableBox {
-    position: absolute;
-    width: 300px;
-    padding: 10px;
-    background-color: lightblue;
-    border: 2px solid #ccc;
-    display: none;  /* Ban đầu ẩn ô vuông */
-    cursor: move;
-    box-sizing: border-box;
-}
-
-#draggableBox .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#inputNumbers {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-#convertButton {
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-#outputBox {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    background-color: #f0f0f0;
-    text-align: center;
-    border-radius: 5px;
-}
-
-#copyButton {
-    padding: 10px 20px;
-    background-color: #008CBA;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-#copyButton:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-		
-		
     </style>
 </head>
 
@@ -240,243 +150,101 @@
 			<li><a href="elements.html">convert-img</a></li>
 		</ul>
 	</nav><!-- One -->
-    <button class="toggle-btn" id="toggleBtn" style="margin-top:50px ;">🌙</button>
-
     <div class="container">
-        <h1 class="text-center mb-4" id="blink">CONVERT TEXT</h1>
-        <div class="form-group">
-            <label for="inputText" id="inputLabel">INPUT (Type "," Line Break)</label>
-            <textarea class="form-control" id="inputText" rows="3"></textarea>
-        </div>
+        <h1>CONVERT-TEXT</h1>
+        <textarea id="inputText" rows="5" placeholder="Nhập văn bản ở đây..."></textarea>
 
-<button id="showBoxButton">SỐ LA MÃ</button>
-
-        <!-- Ô vuông có thể di chuyển -->
-        <div id="draggableBox" class="draggable">
-            <div class="content">
-                <input id="inputNumbers" type="text" placeholder="INPUT">
-                <button id="convertButton">Convert</button>
-                <div id="outputBox" class="output" contenteditable="false"> OUTPUT </div>
-                <button id="copyButton">Copy</button>
-            </div>
-        </div>
-	    
-
-        <label for="resultText" id="outputLabel">OUTPUT</label>
-        <div class="result-group">
-            <div class="result-container">
-                <div class="result" id="uppercaseResult"></div>
-                <label for="uppercaseResult" class="result-label">AAA</label>
-                <div class="copy-btn-container">
-                    <button class="btn btn-success mt-2" id="copyUppercaseBtn" style="display:none;" onclick="copyToClipboard('uppercaseResult')">COPY</button>
-                </div>
-            </div>
-            <div class="result-container">
-                <div class="result" id="lowercaseResult"></div>
-                <label for="lowercaseResult" class="result-label">aaa</label>
-                <div class="copy-btn-container">
-                    <button class="btn btn-success mt-2" id="copyLowercaseBtn" style="display:none;" onclick="copyToClipboard('lowercaseResult')">COPY</button>
-                </div>
-            </div>
-            <div class="result-container">
-                <div class="result" id="capitalizeResult"></div>
-                <label for="capitalizeResult" class="result-label">Aaa</label>
-                <div class="copy-btn-container">
-                    <button class="btn btn-success mt-2" id="copyCapitalizeBtn" style="display:none;" onclick="copyToClipboard('capitalizeResult')">COPY</button>
-                </div>
-            </div>
-            <div class="result-container">
-                <div class="result" id="titlecaseResult"></div>
-                <label for="titlecaseResult" class="result-label">Aaa Aaa</label>
-                <div class="copy-btn-container">
-                    <button class="btn btn-success mt-2" id="copyTitlecaseBtn" style="display:none;" onclick="copyToClipboard('titlecaseResult')">COPY</button>
-                </div>
-            </div>
-        </div>
+        <div id="outputs" class="output-container"></div>
     </div>
-
+    <!-- Thông báo sao chép -->
+    <div id="notification" class="notification">Copy thành công!</div>
     <footer class="footer">
         <p>Design & Developer by © thedat-nguyen</p>
     </footer>
-
     <script>
-        // Hàm chuyển đổi văn bản
-        function convertText() {
-            const inputText = document.getElementById('inputText').value;
-            let uppercaseResult = '';
-            let lowercaseResult = '';
-            let capitalizeResult = '';
-            let titlecaseResult = '';
+        const inputText = document.getElementById('inputText');
+        const outputs = document.getElementById('outputs');
+        const maxLines = 6;
 
-            if (inputText.trim() === '') {
-                document.getElementById('uppercaseResult').textContent = '';
-                document.getElementById('lowercaseResult').textContent = '';
-                document.getElementById('capitalizeResult').textContent = '';
-                document.getElementById('titlecaseResult').textContent = '';
-                document.getElementById('copyUppercaseBtn').style.display = 'none';
-                document.getElementById('copyLowercaseBtn').style.display = 'none';
-                document.getElementById('copyCapitalizeBtn').style.display = 'none';
-                document.getElementById('copyTitlecaseBtn').style.display = 'none';
-                return;
-            }
+        inputText.addEventListener('input', processText);
 
-            // Xử lý inputText: loại bỏ khoảng trắng trước và sau dấu phẩy và tách các mục
-            const items = inputText.split(',').map(item => item.trim()); // Loại bỏ khoảng trắng xung quanh mỗi mục
+        function processText() {
+            const text = inputText.value.trim();
+            const lines = text.split(',').map(line => line.trim());
 
-            // Uppercase
-            uppercaseResult = items.map(item => item.toUpperCase()).join('\n');
-            // Lowercase
-            lowercaseResult = items.map(item => item.toLowerCase()).join('\n');
-            // Capitalize
-            capitalizeResult = items.map(item => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()).join('\n');
-            // Titlecase
-            titlecaseResult = items.map(item => item.replace(/\b\w/g, char => char.toUpperCase())).join('\n');
+            const results = {
+                "Dạng 1: VIẾT HOA TẤT CẢ": lines.map(line => line.toUpperCase()),
+                "Dạng 2: viết thường tất cả": lines.map(line => line.toLowerCase()),
+                "Dạng 3: Viết hoa chữ cái đầu dòng": lines.map(line => line.charAt(0).toUpperCase() + line.slice(1).toLowerCase()),
+                "Dạng 4: Viết hoa chữ cái đầu của từng từ": lines.map(line => line.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' '))
+            };
 
-            // Gán kết quả vào các ô
-            document.getElementById('uppercaseResult').textContent = uppercaseResult;
-            document.getElementById('lowercaseResult').textContent = lowercaseResult;
-            document.getElementById('capitalizeResult').textContent = capitalizeResult;
-            document.getElementById('titlecaseResult').textContent = titlecaseResult;
+            outputs.innerHTML = '';
 
-            // Hiển thị nút Copy
-            document.getElementById('copyUppercaseBtn').style.display = 'inline-block';
-            document.getElementById('copyLowercaseBtn').style.display = 'inline-block';
-            document.getElementById('copyCapitalizeBtn').style.display = 'inline-block';
-            document.getElementById('copyTitlecaseBtn').style.display = 'inline-block';
-        }
+            Object.entries(results).forEach(([label, result]) => {
+                const outputDiv = document.createElement('div');
+                outputDiv.className = 'column';
 
-        // Hàm copy nội dung
-        function copyToClipboard(resultId) {
-            const resultText = document.getElementById(resultId).textContent;
-            navigator.clipboard.writeText(resultText).then(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Copied to clipboard!',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    timerProgressBar: true
+                const chunks = splitIntoColumns(result, maxLines);
+
+                const labelElement = document.createElement('span');
+                labelElement.className = 'label';
+                labelElement.textContent = label;
+                outputDiv.appendChild(labelElement);
+
+                chunks.forEach(chunk => {
+                    const textarea = document.createElement('textarea');
+                    textarea.className = 'output';
+                    textarea.readOnly = true;
+                    textarea.value = chunk.join('\n');
+
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'copy-btn';
+                    copyButton.textContent = 'Copy';
+                    copyButton.addEventListener('click', () => copyToClipboard(chunk.join('\n')));
+
+                    outputDiv.appendChild(textarea);
+                    outputDiv.appendChild(copyButton);
                 });
-            }).catch(() => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed to copy',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    timerProgressBar: true
-                });
+
+                outputs.appendChild(outputDiv);
             });
         }
 
-        // Đổi chế độ sáng tối
-        document.getElementById('toggleBtn').addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('toggleBtn').textContent = isDark ? '🌞' : '🌙';
-        });
+        function splitIntoColumns(array, maxLines) {
+            if (array.length <= maxLines) {
+                return [array];
+            }
 
-
-	const showBoxButton = document.getElementById('showBoxButton');
-const draggableBox = document.getElementById('draggableBox');
-const inputNumbers = document.getElementById('inputNumbers');
-const convertButton = document.getElementById('convertButton');
-const outputBox = document.getElementById('outputBox');
-const copyButton = document.getElementById('copyButton');
-
-let isDragging = false;
-let offsetX, offsetY;
-
-// Hàm chuyển đổi số thành chữ La Mã
-function convertToRoman(num) {
-    const romanNumerals = [
-        ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
-        ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"],
-        ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"],
-        ["", "M"]
-    ];
-
-    const digits = String(num).split('').reverse();
-    let roman = '';
-    
-    for (let i = 0; i < digits.length; i++) {
-        roman = romanNumerals[i][parseInt(digits[i])] + roman;
-    }
-
-    return roman;
-}
-
-// Xử lý sự kiện click trên nút để hiển thị hoặc ẩn ô vuông
-showBoxButton.addEventListener('click', () => {
-    if (draggableBox.style.display === 'none' || draggableBox.style.display === '') {
-        draggableBox.style.display = 'block';  // Hiện ô vuông
-    } else {
-        draggableBox.style.display = 'none';  // Ẩn ô vuông
-    }
-});
-
-// Xử lý sự kiện click trên nút chuyển đổi
-convertButton.addEventListener('click', () => {
-    const inputText = inputNumbers.value.trim();
-
-    // Xử lý chuỗi nhập vào, tách theo dấu / và , và chuyển thành mảng
-    const numbers = inputText.split(/[\/,.]/).map(str => str.trim()).filter(Boolean);
-
-    // Chuyển đổi các số thành chữ La Mã
-    const romanNumerals = numbers.map(num => {
-        const parsedNum = parseInt(num, 10);
-        if (!isNaN(parsedNum) && parsedNum > 0) {
-            return convertToRoman(parsedNum);
+            const mid = Math.ceil(array.length / 2);
+            return [array.slice(0, mid), array.slice(mid)];
         }
-        return '';  // Nếu không phải số hợp lệ thì để trống
-    }).join('.');  // Dùng dấu "..." để thay thế dấu phân cách
 
-    // Cập nhật ô output
-    outputBox.textContent = romanNumerals;
-    copyButton.disabled = false;  // Kích hoạt nút copy
-});
+        // Hàm hiển thị thông báo
+        function showNotification(message) {
+            notification.textContent = message; // Thay đổi nội dung thông báo
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 1500); // Ẩn sau 3 giây
+        }
 
-// Xử lý sự kiện copy nội dung
-copyButton.addEventListener('click', () => {
-    const range = document.createRange();
-    range.selectNode(outputBox);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
-});
+        // Hàm sao chép nội dung
+        function copyToClipboard(text) {
+            if (!text.trim()) {
+                // Nếu nội dung trống, hiện thông báo lỗi
+                showNotification('Không có nội dung gì để copy');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copy thành công!'); // Hiển thị thông báo thành công
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
 
-// Xử lý sự kiện bắt đầu kéo ô vuông
-draggableBox.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    offsetX = e.clientX - draggableBox.offsetLeft;
-    offsetY = e.clientY - draggableBox.offsetTop;
-});
 
-// Xử lý sự kiện kéo ô vuông
-document.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-        let x = e.clientX - offsetX;
-        let y = e.clientY - offsetY;
 
-        // Giới hạn ô vuông chỉ di chuyển trong khung cửa sổ
-        let maxX = window.innerWidth - draggableBox.offsetWidth;
-        let maxY = window.innerHeight - draggableBox.offsetHeight;
-
-        x = Math.max(0, Math.min(x, maxX));
-        y = Math.max(0, Math.min(y, maxY));
-
-        draggableBox.style.left = x + 'px';
-        draggableBox.style.top = y + 'px';
-    }
-});
-
-// Dừng kéo khi thả chuột
-document.addEventListener('mouseup', () => {
-    isDragging = false;
-});
-	    
-
-        // Lắng nghe sự kiện thay đổi input
-        document.getElementById('inputText').addEventListener('input', convertText);
     </script>
 
 	<!-- Scripts -->
