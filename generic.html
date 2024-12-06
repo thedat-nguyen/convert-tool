@@ -418,7 +418,7 @@ convertButton.addEventListener('click', () => {
     const inputText = inputNumbers.value.trim();
 
     // Xử lý chuỗi nhập vào, tách theo dấu / và , và chuyển thành mảng
-    const numbers = inputText.split(/[\/,]/).map(str => str.trim()).filter(Boolean);
+    const numbers = inputText.split(/[\/,.]/).map(str => str.trim()).filter(Boolean);
 
     // Chuyển đổi các số thành chữ La Mã
     const romanNumerals = numbers.map(num => {
