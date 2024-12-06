@@ -67,23 +67,34 @@
             background-color: #0056b3;
         }
 
-        .output-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
+        /* Sắp xếp các cột vào 2 nhóm */
+.output-container {
+    display: flex;
+    flex-wrap: wrap; /* Cho phép các phần tử xuống dòng */
+    justify-content: space-between;
+    gap: 20px; /* Khoảng cách giữa các phần tử */
+    margin-top: 20px;
+}
 
-        .column {
-            margin: 10px;
-            text-align: center;
-        }
+/* Cột chiếm nửa chiều rộng */
+.column {
+    width: 48%; /* Chiếm 48% chiều rộng */
+    text-align: center;
+}
 
-        .label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
+/* Đảm bảo các phần tử khác như label, output không bị ảnh hưởng */
+.label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.output,
+.copy-btn {
+    width: 100%;
+    margin: 10px 0;
+}
+
 
         /* Responsive Styles */
         @media screen and (max-width: 768px) {
