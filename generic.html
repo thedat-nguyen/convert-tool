@@ -140,6 +140,104 @@
             font-size: 14px;
             color: #666;
         }
+
+
+
+
+
+
+        #show-popup {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #show-popup:hover {
+      background-color: #218838;
+    }
+
+    /* Popup Modal Styles */
+    #popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #popup {
+      width: 500px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    #output {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      text-align: center;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    #copy-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #copy-btn:hover {
+      background-color: #0056b3;
+    }
+
+    #close-popup {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #close-popup:hover {
+      color: red;
+    }
     </style>
 </head>
 
@@ -158,11 +256,31 @@
 		</ul>
 	</nav><!-- One -->
     <div class="container">
-        <h1>CONVERT-TEXT</h1>
+        <h1>CONVERT-TEXT <button id="show-popup">LA MÃ</button></h1>
         <textarea id="inputText" rows="5" placeholder="Nhập văn bản ở đây..."></textarea>
 
         <div id="outputs" class="output-container"></div>
     </div>
+    
+
+
+
+    <div id="popup-overlay">
+        <div id="popup">
+          <button id="close-popup">&times;</button>
+          <label for="input-number">Nhập Dãy Số :</label>
+          <input type="text" id="input-number" placeholder="Các Kí Tự , . / \ - | Sẽ Chuyển Về Dấu .">
+          
+          <label for="output">Kết Quả :</label>
+          <div id="output"> KẾT QUẢ Ở ĐÂY</div>
+          
+          <button id="copy-btn">Copy</button>
+        </div>
+      </div>
+
+
+
+
     <!-- Thông báo sao chép -->
     <div id="notification" class="notification">Copy thành công!</div>
     <footer class="footer">
@@ -249,6 +367,64 @@
                 console.error('Failed to copy:', err);
             });
         }
+
+
+
+
+         // Helper function to convert number to Roman numerals
+    function numberToRoman(num) {
+      const romanMap = [
+        { value: 1000, symbol: 'M' },
+        { value: 900, symbol: 'CM' },
+        { value: 500, symbol: 'D' },
+        { value: 400, symbol: 'CD' },
+        { value: 100, symbol: 'C' },
+        { value: 90, symbol: 'XC' },
+        { value: 50, symbol: 'L' },
+        { value: 40, symbol: 'XL' },
+        { value: 10, symbol: 'X' },
+        { value: 9, symbol: 'IX' },
+        { value: 5, symbol: 'V' },
+        { value: 4, symbol: 'IV' },
+        { value: 1, symbol: 'I' },
+      ];
+      let result = '';
+      for (const { value, symbol } of romanMap) {
+        while (num >= value) {
+          result += symbol;
+          num -= value;
+        }
+      }
+      return result;
+    }
+
+    const showPopupButton = document.getElementById('show-popup');
+    const popupOverlay = document.getElementById('popup-overlay');
+    const closePopupButton = document.getElementById('close-popup');
+    const inputField = document.getElementById('input-number');
+    const outputField = document.getElementById('output');
+    const copyButton = document.getElementById('copy-btn');
+
+    // Show/Hide popup
+    showPopupButton.addEventListener('click', () => {
+      popupOverlay.style.display = popupOverlay.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    closePopupButton.addEventListener('click', () => {
+      popupOverlay.style.display = 'none';
+    });
+
+    // Input event
+    inputField.addEventListener('input', () => {
+      const inputValue = inputField.value;
+      const sanitizedInput = inputValue.replace(/[,./\\|-]/g, '.');
+      const numbers = sanitizedInput.split('.').map(num => parseInt(num.trim(), 10)).filter(num => !isNaN(num));
+      const romanNumbers = numbers.map(numberToRoman).join('.');
+      outputField.textContent = romanNumbers || 'VUI LÒNG NHẬP SỐ';
+    });
+
+    // Copy event
+    
 
 
 
